@@ -16,6 +16,14 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Books Catalog Home Page!');
 });
 
+// Health check route for monitoring
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Book Catalogue application is running'
+  });
+});
+
 mongoose.connect('mongodb://127.0.0.1:27017/booksdb')
 .then(() => {
   console.log('MongoDB connected successfully');
