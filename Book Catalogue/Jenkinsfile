@@ -49,6 +49,9 @@ pipeline {
                 dir('Book Catalogue') {
                     echo 'Running npm audit security scan...'
                     bat 'npm audit || exit 0'
+
+                    echo 'Running Trivy filesystem vulnerability scan...'
+                    bat 'trivy fs --scanners vuln --severity HIGH,CRITICAL --exit-code 0 .'
                 }
             }
         }
