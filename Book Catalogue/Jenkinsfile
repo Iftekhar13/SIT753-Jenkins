@@ -51,7 +51,7 @@ pipeline {
                     bat 'npm audit || exit 0'
 
                     echo 'Running Trivy filesystem vulnerability scan...'
-                    bat 'trivy fs --scanners vuln --severity HIGH,CRITICAL --exit-code 0 .'
+                    bat '"C:\\Users\\azimi\\AppData\\Local\\Microsoft\\WinGet\\Links\\trivy.exe" fs --scanners vuln --severity HIGH,CRITICAL --exit-code 0 .'
                 }
             }
         }
