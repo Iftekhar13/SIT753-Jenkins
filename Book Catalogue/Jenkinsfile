@@ -59,7 +59,7 @@ pipeline {
                     echo 'Creating ZIP release artefact...'
                     bat 'if not exist release mkdir release'
                     bat 'powershell Compress-Archive -Path server.js,package.json,package-lock.json,routes,controllers,models,services,public,tests -DestinationPath release/%RELEASE_NAME% -Force'
-                    archiveArtifacts artifacts: 'Book Catalogue/release/*.zip', fingerprint: true
+                    archiveArtifacts artifacts: 'release/*.zip', fingerprint: true
                 }
             }
         }
