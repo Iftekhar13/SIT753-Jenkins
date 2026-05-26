@@ -24,14 +24,20 @@ app.get('/health', (req, res) => {
   });
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/booksdb')
-.then(() => {
-  console.log('MongoDB connected successfully');
-})
-.catch((err) => {
-  console.log('MongoDB connection error:', err);
-});
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect('mongodb://127.0.0.1:27017/booksdb')
+    .then(() => {
+      console.log('MongoDB connected successfully');
+    })
+    .catch((error) => {
+      console.error('MongoDB connection error:', error);
+    });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
