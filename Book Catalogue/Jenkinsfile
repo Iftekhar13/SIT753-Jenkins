@@ -41,12 +41,17 @@ pipeline {
                     bat 'npm run lint'
 
                     echo 'Running SonarCloud code quality analysis...'
-                    withSonarQubeEnv('SonarCloud') {
-                        bat 'sonar-scanner'
+                    script {
+                        def scannerHome = tool 'SonarScanner'
+                        withSonarQubeEnv('SonarCloud') {
+                            bat "\"${scannerHome}\\bin\\sonar-scanner.bat\""
+                        }
                     }
                 }
             }
         }
+
+
 
         stage('Security') {
             steps {
