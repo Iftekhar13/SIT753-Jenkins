@@ -69,7 +69,7 @@ pipeline {
                 dir('Book Catalogue') {
                     echo 'Starting application in local Jenkins test environment...'
                     bat 'start /B npm start'
-                    bat 'timeout /T 10 /NOBREAK'
+                    bat 'powershell -Command "Start-Sleep -Seconds 10"'
                 }
             }
         }
