@@ -33,6 +33,7 @@ pipeline {
                     bat 'npm test'
                 }
             }
+        }
         stage('Code Quality') {
             steps {
                 dir('Book Catalogue') {
