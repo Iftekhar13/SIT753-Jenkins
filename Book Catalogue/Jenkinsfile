@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS-20'
+    }
+
+    environment {
+        RELEASE_NAME = "book-catalogue-${BUILD_NUMBER}.zip"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code from GitHub...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Installing project dependencies...'
+                bat 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running automated tests...'
+                bat 'npm test'
+            }
+        }
+
+        stage('Code Quality') {
+            steps {
+                echo 'Running ESLint code quality check...'
+                bat 'npm run lint'
+            }
+        }
+
+        stage('Security') {
+            steps {
+                echo 'Running npm audit security scan...'
+                bat 'npm audit || exit 0'
+            }
+        }
+
+        stage('Release') {
+            steps {
+                echo 'Creating ZIP release artefact...'
+                bat 'if not exist release mkdir release'
+                bat 'powershell Compress-Archive -Path server.js,package.json,package-lock.json,routes,controllers,models,services,public,tests -DestinationPath release/%RELEASE_NAME% -Force'
+                archiveArtifacts artifacts: 'release/*.zip', fingerprint: true
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Starting application in local Jenkins test environment...'
+                bat 'start /B npm start'
+                bat 'timeout /T 10 /NOBREAK'
+            }
+        }
+
+        stage('Monitoring') {
+            steps {
+                echo 'Checking health endpoint...'
+                bat 'powershell -Command "Invoke-WebRequest -Uri http://localhost:3000/health -UseBasicParsing"'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed. Check console output.'
+        }
+    }
+}
